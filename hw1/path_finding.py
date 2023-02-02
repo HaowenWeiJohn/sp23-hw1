@@ -98,11 +98,51 @@ def GVD_path(
     # the length of the frontier array, update this variable at each step. 
     frontier_size = [0]
 
-    while len(frontier) > 0:
-        # TODO:implement this
-        pass
 
-    return None, None, None
+    # dfs:
+
+    while len(frontier) > 0:
+        if mode==PathPlanMode.BFS:
+            neighbor_list = neighbors(grid=grid,
+                                 i=frontier[0][0],
+                                 j=frontier[0][1])
+
+            for neighbor in neighbor_list:
+                if neighbor in GVD:
+                    if neighbor not in closed and neighbor not in frontier:
+                        # add to frontier
+                        frontier.append(neighbor)
+                        pointers[neighbor] = frontier[0]
+                        # if neighbor==B:
+                        #     break
+            closed.add(frontier[0])
+            frontier.pop(0)
+            frontier_size[0] = len(frontier)
+
+
+        elif mode==PathPlanMode.DFS:
+            neighbor_list = neighbors(grid=grid,
+                                      i=frontier[0][0],
+                                      j=frontier[0][1])
+            for neighbor in neighbor_list:
+                if neighbor in GVD:
+                    if neighbor not in closed and neighbor not in frontier:
+                        path, pointers, frontier_size = GVD_path(grid, GVD, neighbor, B, mode)
+
+
+
+    # triv back
+    path = [B]
+    parent = B
+    while parent != A:
+        parent = pointers[parent]
+        path.append(parent)
+    path.reverse()
+
+
+
+
+    return path, pointers, frontier_size
 
 
 def compute_path(
@@ -131,8 +171,8 @@ def compute_path(
 
 
 def test_world(
-    world_id, 
-    start, 
+    world_id,
+    start,
     goal,
     outmode: PathPlanMode = PathPlanMode.GRAD,
     inmode: PathPlanMode = PathPlanMode.DFS,
