@@ -24,6 +24,28 @@ def cell_to_GVD_gradient_ascent(
 
     path = [cell]
     # TODO: Implement this method
+    #
+    #
+    # while
+    # current_cell = path[-1]
+    # neighbor_list = neighbors(grid, current_cell[0], path[-1][0])
+    # max_distance = 0
+    # for neighbor_list:
+
+    # best first search
+    current_cell = path[-1]
+    while current_cell not in GVD:
+        neighbor_list = neighbors(grid, current_cell[0], current_cell[1])
+        # current_cell = path[-1]
+        max_value = 0
+        for neighbor in neighbor_list:
+            value = grid[neighbor[0], neighbor[1]]
+            if value>max_value:
+                max_value=value
+                current_cell=neighbor
+
+        path.append(current_cell)
+
     return path
 
 
@@ -83,6 +105,7 @@ def GVD_path(
     """
 
     # the set of cells on the GVD
+    global neighbor_list
     GVD = set(GVD)
 
     # the set of visited cells
@@ -102,21 +125,23 @@ def GVD_path(
 
     while len(frontier) > 0:
         if mode == PathPlanMode.BFS:
-            neighbor_list = neighbors(grid=grid,
-                                      i=frontier[0][0],
-                                      j=frontier[0][1])
+            vertex = frontier.pop(0)
+        if mode == PathPlanMode.DFS:
+            vertex = frontier.pop(-1)
+        frontier_size.append(len(frontier))
+        # print(frontier_size)
 
-            for neighbor in neighbor_list:
-                if neighbor in GVD:
-                    if neighbor not in pointers and neighbor not in frontier:
-                        # add to frontier
-                        frontier.append(neighbor)
-                        pointers[neighbor] = frontier[0]
-                        # if neighbor==B:
-                        #     break
-            # closed.add(frontier[0])
-            frontier.pop(0)
-            frontier_size[0] = len(frontier)
+        neighbor_list = neighbors(grid=grid,
+                                  i=vertex[0],
+                                  j=vertex[1])
+
+
+        for neighbor in neighbor_list:
+            if neighbor in GVD:
+                if neighbor not in pointers and neighbor not in frontier:
+                    frontier.append(neighbor)
+                    pointers[neighbor] = vertex
+
 
     # triv back
     path = [B]

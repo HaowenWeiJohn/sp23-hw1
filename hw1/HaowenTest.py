@@ -28,6 +28,17 @@ plot_GVD(world, 1)
 gvd_path_tuple = set([tuple(cell) for cell in gvd_path])
 gvd_path = [tuple(cell) for cell in gvd_path]
 a = neighbors(world, 10, 10)
+mid_path, reached, frontier_size = pf.GVD_path(world, gvd_path_tuple, (15, 30), (91, 7), PathPlanMode.DFS)
+plot_GVD(world, 1, gvd_path, mid_path)
 mid_path, reached, frontier_size = pf.GVD_path(world, gvd_path_tuple, (15, 30), (91, 7), PathPlanMode.BFS)
 plot_GVD(world, 1, gvd_path, mid_path)
+
+
+# test grad access
+path = pf.cell_to_GVD_gradient_ascent(world, gvd_path_tuple, (10,20))
+plot_GVD(world, 1, gvd_path, path)
+
+path = pf.cell_to_GVD_gradient_ascent(world, gvd_path_tuple, (40,20))
+plot_GVD(world, 1, gvd_path, path)
+
 
