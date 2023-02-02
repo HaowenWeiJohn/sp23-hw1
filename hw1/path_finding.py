@@ -9,7 +9,7 @@ from hw1.utils import neighbors, plot_GVD, PathPlanMode, distance
 
 
 def cell_to_GVD_gradient_ascent(
-    grid: npt.ArrayLike, GVD: Set[Tuple[int, int]], cell: Tuple[int, int]
+        grid: npt.ArrayLike, GVD: Set[Tuple[int, int]], cell: Tuple[int, int]
 ) -> List[Tuple[int, int]]:
     """Find the shortest path from any cell in the enviroment to a cell on the
     GVD using gradient ascent.
@@ -28,8 +28,8 @@ def cell_to_GVD_gradient_ascent(
 
 
 def cell_to_GVD_a_star(
-    grid: npt.ArrayLike, GVD: Set[Tuple[int, int]], cell: Tuple[int, int], 
-    goal: Tuple[int, int]
+        grid: npt.ArrayLike, GVD: Set[Tuple[int, int]], cell: Tuple[int, int],
+        goal: Tuple[int, int]
 ) -> List[Tuple[int, int]]:
     """Find the shortest path from any cell in the enviroment to the GVD using
     A* with L2 distance heurstic.
@@ -64,11 +64,11 @@ def cell_to_GVD_a_star(
 
 
 def GVD_path(
-    grid: npt.ArrayLike,
-    GVD: Set[Tuple[int, int]],
-    A: Tuple[int, int],
-    B: Tuple[int, int],
-    mode: PathPlanMode
+        grid: npt.ArrayLike,
+        GVD: Set[Tuple[int, int]],
+        A: Tuple[int, int],
+        B: Tuple[int, int],
+        mode: PathPlanMode
 ) -> List[Tuple[int, int]]:
     """Find the shortest path between two points on the GVD using
     Breadth-First-Search
@@ -98,38 +98,25 @@ def GVD_path(
     # the length of the frontier array, update this variable at each step. 
     frontier_size = [0]
 
-
     # dfs:
 
     while len(frontier) > 0:
-        if mode==PathPlanMode.BFS:
+        if mode == PathPlanMode.BFS:
             neighbor_list = neighbors(grid=grid,
-                                 i=frontier[0][0],
-                                 j=frontier[0][1])
+                                      i=frontier[0][0],
+                                      j=frontier[0][1])
 
             for neighbor in neighbor_list:
                 if neighbor in GVD:
-                    if neighbor not in closed and neighbor not in frontier:
+                    if neighbor not in pointers and neighbor not in frontier:
                         # add to frontier
                         frontier.append(neighbor)
                         pointers[neighbor] = frontier[0]
                         # if neighbor==B:
                         #     break
-            closed.add(frontier[0])
+            # closed.add(frontier[0])
             frontier.pop(0)
             frontier_size[0] = len(frontier)
-
-
-        elif mode==PathPlanMode.DFS:
-            neighbor_list = neighbors(grid=grid,
-                                      i=frontier[0][0],
-                                      j=frontier[0][1])
-            for neighbor in neighbor_list:
-                if neighbor in GVD:
-                    if neighbor not in closed and neighbor not in frontier:
-                        path, pointers, frontier_size = GVD_path(grid, GVD, neighbor, B, mode)
-
-
 
     # triv back
     path = [B]
@@ -139,20 +126,16 @@ def GVD_path(
         path.append(parent)
     path.reverse()
 
-
-
-
     return path, pointers, frontier_size
 
 
 def compute_path(
-    grid,
-    GVD: set[tuple],
-    start: tuple,
-    goal: tuple,
-    outmode: PathPlanMode = PathPlanMode.GRAD,
-    inmode: PathPlanMode = PathPlanMode.DFS):
-
+        grid,
+        GVD: set[tuple],
+        start: tuple,
+        goal: tuple,
+        outmode: PathPlanMode = PathPlanMode.GRAD,
+        inmode: PathPlanMode = PathPlanMode.DFS):
     """ Compute the path on the grid from start to goal using the methods
     implemented in this file. 
     Returns:
@@ -171,13 +154,12 @@ def compute_path(
 
 
 def test_world(
-    world_id,
-    start,
-    goal,
-    outmode: PathPlanMode = PathPlanMode.GRAD,
-    inmode: PathPlanMode = PathPlanMode.DFS,
-    world_dir="worlds"):
-
+        world_id,
+        start,
+        goal,
+        outmode: PathPlanMode = PathPlanMode.GRAD,
+        inmode: PathPlanMode = PathPlanMode.DFS,
+        world_dir="worlds"):
     print(f"Testing world {world_id} with modes {inmode} and {outmode}")
     grid = np.load(f"{world_dir}/world_{world_id}.npy")
     GVD = set([tuple(cell) for cell in np.load(
