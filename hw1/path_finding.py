@@ -76,8 +76,20 @@ def cell_to_GVD_a_star(
     reached = {cell: {"cost": 0, "parent": None}}
 
     while not frontier.empty():
-        # TODO: implement this
-        pass
+        vertex = frontier.get()
+        frontier_size.append(frontier.qsize())
+        neighbor_list = neighbors(grid=grid,
+                                  i=vertex[1][0],
+                                  j=vertex[1][1]) # append to the list
+        for neighbor in neighbor_list:
+            if neighbor in GVD:
+                if neighbor not in pointers and neighbor not in frontier:
+
+
+
+
+        # # TODO: implement this
+        # pass
 
     # TODO: implement this to use the reached table (back pointers) to find
     # the path once you have reached a cell on the GVD.
