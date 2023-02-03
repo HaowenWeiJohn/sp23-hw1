@@ -71,29 +71,42 @@ def cell_to_GVD_a_star(
     frontier_size = [0]
 
     # construct a reached table using python dictionary. The key is the (x, y)
-    # tuple of the cell position, the value is dictiionary with the cell's cost,
+    # tuple of the cell position, the value is dictionary with the cell's cost,
     # and cell parent.
     reached = {cell: {"cost": 0, "parent": None}}
-
-    while not frontier.empty():
+    find_gvd = False
+    gvd_cell = None
+    while not frontier.empty() and not find_gvd:
         vertex = frontier.get()
         frontier_size.append(frontier.qsize())
         neighbor_list = neighbors(grid=grid,
                                   i=vertex[1][0],
                                   j=vertex[1][1]) # append to the list
         for neighbor in neighbor_list:
-            if neighbor in GVD:
-                if neighbor not in pointers and neighbor not in frontier:
+            if neighbor not in reached:
+                cost = vertex["cost"] + \
+                       distance(vertex[1], neighbor) + \
+                       distance(neighbor, goal)
+                frontier.put((cost, neighbor))
+                reached[neighbor] = {"cost": cost, "parent": vertex[1]}
+                if neighbor in GVD:
+                    find_gvd=True
+                    gvd_cell=neighbor
 
 
 
-
-        # # TODO: implement this
-        # pass
 
     # TODO: implement this to use the reached table (back pointers) to find
     # the path once you have reached a cell on the GVD.
-    path = None
+    # path = None
+    path = [gvd_cell]
+    parent = gvd_cell
+    while parent != cell:
+        parent = reached[parent]["parent"]
+        path.append(parent)
+    path.reverse()
+
+
     return path, reached, frontier_size
 
 

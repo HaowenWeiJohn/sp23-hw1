@@ -42,3 +42,5 @@ path = pf.cell_to_GVD_gradient_ascent(world, gvd_path_tuple, (40,20))
 plot_GVD(world, 1, gvd_path, path)
 
 
+path = pf.cell_to_GVD_gradient_ascent(world, gvd_path_tuple, (40,20))
+plot_GVD(world, 1, gvd_path, path)
