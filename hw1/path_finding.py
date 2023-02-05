@@ -84,7 +84,7 @@ def cell_to_GVD_a_star(
                                   j=vertex[1][1]) # append to the list
         for neighbor in neighbor_list:
             if neighbor not in reached:
-                cost = vertex["cost"] + \
+                cost = vertex[0] + \
                        distance(vertex[1], neighbor) + \
                        distance(neighbor, goal)
                 frontier.put((cost, neighbor))
@@ -92,7 +92,7 @@ def cell_to_GVD_a_star(
                 if neighbor in GVD:
                     find_gvd=True
                     gvd_cell=neighbor
-
+                    break
 
 
 
