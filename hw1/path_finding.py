@@ -40,9 +40,9 @@ def cell_to_GVD_gradient_ascent(
         max_value = 0
         for neighbor in neighbor_list:
             value = grid[neighbor[0], neighbor[1]]
-            if value>max_value:
-                max_value=value
-                current_cell=neighbor
+            if value > max_value:
+                max_value = value
+                current_cell = neighbor
 
         path.append(current_cell)
 
@@ -77,24 +77,23 @@ def cell_to_GVD_a_star(
     find_gvd = False
     gvd_cell = None
     while not frontier.empty() and not find_gvd:
-        vertex = frontier.get()
+        _, vertex = frontier.get()
         frontier_size.append(frontier.qsize())
         neighbor_list = neighbors(grid=grid,
-                                  i=vertex[1][0],
-                                  j=vertex[1][1]) # append to the list
+                                  i=vertex[0],
+                                  j=vertex[1])  # append to the list
         for neighbor in neighbor_list:
-            if neighbor not in reached:
-                cost = vertex[0] + \
-                       distance(vertex[1], neighbor) + \
-                       distance(neighbor, goal)
-                frontier.put((cost, neighbor))
-                reached[neighbor] = {"cost": cost, "parent": vertex[1]}
+            g = reached[vertex]['cost'] + distance(vertex, neighbor)
+            if neighbor not in reached or g < reached[neighbor][
+                'cost']:  # if g smaller than the real cost to this pixel
+                h = distance(neighbor, goal)
+                f = g + h
+                frontier.put((f, neighbor))
+                reached[neighbor] = {"cost": g, "parent": vertex}
                 if neighbor in GVD:
-                    find_gvd=True
-                    gvd_cell=neighbor
+                    find_gvd = True
+                    gvd_cell = neighbor
                     break
-
-
 
     # TODO: implement this to use the reached table (back pointers) to find
     # the path once you have reached a cell on the GVD.
@@ -105,7 +104,6 @@ def cell_to_GVD_a_star(
         parent = reached[parent]["parent"]
         path.append(parent)
     path.reverse()
-
 
     return path, reached, frontier_size
 
@@ -160,13 +158,11 @@ def GVD_path(
                                   i=vertex[0],
                                   j=vertex[1])
 
-
         for neighbor in neighbor_list:
             if neighbor in GVD:
                 if neighbor not in pointers and neighbor not in frontier:
                     frontier.append(neighbor)
                     pointers[neighbor] = vertex
-
 
     # triv back
     path = [B]
