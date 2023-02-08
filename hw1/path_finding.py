@@ -40,9 +40,9 @@ def cell_to_GVD_gradient_ascent(
         max_value = 0
         for neighbor in neighbor_list:
             value = grid[neighbor[0], neighbor[1]]
-            if value > max_value:
-                max_value = value
-                current_cell = neighbor
+            if value>max_value:
+                max_value=value
+                current_cell=neighbor
 
         path.append(current_cell)
 
@@ -74,10 +74,12 @@ def cell_to_GVD_a_star(
     # tuple of the cell position, the value is dictionary with the cell's cost,
     # and cell parent.
     reached = {cell: {"cost": 0, "parent": None}}
-    find_gvd = False
     gvd_cell = None
-    while not frontier.empty() and not find_gvd:
+    while not frontier.empty():
         _, vertex = frontier.get()
+        if vertex in GVD:
+            gvd_cell=vertex
+            break
         frontier_size.append(frontier.qsize())
         neighbor_list = neighbors(grid=grid,
                                   i=vertex[0],
@@ -90,10 +92,12 @@ def cell_to_GVD_a_star(
                 f = g + h
                 frontier.put((f, neighbor))
                 reached[neighbor] = {"cost": g, "parent": vertex}
-                if neighbor in GVD:
-                    find_gvd = True
-                    gvd_cell = neighbor
-                    break
+                # if neighbor in GVD:
+                #     find_gvd = True
+                #     gvd_cell = neighbor
+                #     break
+
+
 
     # TODO: implement this to use the reached table (back pointers) to find
     # the path once you have reached a cell on the GVD.
@@ -104,6 +108,7 @@ def cell_to_GVD_a_star(
         parent = reached[parent]["parent"]
         path.append(parent)
     path.reverse()
+
 
     return path, reached, frontier_size
 
@@ -158,11 +163,13 @@ def GVD_path(
                                   i=vertex[0],
                                   j=vertex[1])
 
+
         for neighbor in neighbor_list:
             if neighbor in GVD:
                 if neighbor not in pointers and neighbor not in frontier:
                     frontier.append(neighbor)
                     pointers[neighbor] = vertex
+
 
     # triv back
     path = [B]
