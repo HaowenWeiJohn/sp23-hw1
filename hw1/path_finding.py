@@ -152,10 +152,15 @@ def GVD_path(
     # dfs:
 
     while len(frontier) > 0:
+        vertex = None
         if mode == PathPlanMode.BFS:
             vertex = frontier.pop(0)
         if mode == PathPlanMode.DFS:
             vertex = frontier.pop(-1)
+
+        if vertex == B:
+            break
+
         frontier_size.append(len(frontier))
         # print(frontier_size)
 
